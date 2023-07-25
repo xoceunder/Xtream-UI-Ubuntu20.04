@@ -6,7 +6,7 @@ from zipfile import ZipFile
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
-rDownloadURL = {"main": "https://bitbucket.org/xoceunder/raw/master/main_xui_xoceunder.tar.gz", "sub": "https://bitbucket.org/xoceunder/raw/master/sub_xui_xoceunder.tar.gz"}
+rDownloadURL = {"main": "https://bitbucket.org/xoceunder/xc/raw/master/main_xui_xoceunder.tar.gz", "sub": "https://bitbucket.org/xoceunder/xc/raw/master/sub_xui_xoceunder.tar.gz"}
 rPackages = ["libcurl4", "libxslt1-dev", "libgeoip-dev", "e2fsprogs", "wget", "mcrypt", "nscd", "htop", "zip", "unzip", "mc", "mariadb-server", "libpng16-16", "libzip5", "python3-paramiko", "python-is-python3"]
 rInstall = {"MAIN": "main", "LB": "sub"}
 rUpdate = {"UPDATE": "update"}
@@ -94,9 +94,9 @@ def install(rType="MAIN"):
 def update(rType="MAIN"):
     if rType == "UPDATE":
         printc("Enter the link of release_xyz.zip file:", col.WARNING)
-        rlink = input('Example: https://bitbucket.org/xoceunder/raw/master/release_22f.zip\n\nNow enter the link:\n\n')
+        rlink = input('Example: https://bitbucket.org/xoceunder/xc/raw/master/release_22f.zip\n\nNow enter the link:\n\n')
     else:
-        rlink = "https://bitbucket.org/xoceunder/raw/master/release_22f.zip"
+        rlink = "https://bitbucket.org/xoceunder/xc/raw/master/release_22f.zip"
         printc("Installing Admin Panel")
     hdr = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
