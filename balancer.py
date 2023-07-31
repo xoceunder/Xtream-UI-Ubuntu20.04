@@ -40,13 +40,10 @@ def install():
 def encrypt(rHost="127.0.0.1", rUsername="user_iptvpro", rPassword="", rDatabase="xtream_iptvpro", rServerID=1, rPort=7999):
     try: os.remove("/home/xtreamcodes/iptv_xtream_codes/config")
     except: pass
-    data_to_encrypt = '{"host":"%s","db_user":"%s","db_pass":"%s","db_name":"%s","server_id":"%d", "db_port":"%d"}' % (rHost, rUsername, rPassword, rDatabase, rServerID, rPort)
-    key = cycle(b'5709650b0d7806074842c6de575025b1')
-    encrypted_data_bytes = bytes(c ^ k for c, k in zip(data_to_encrypt.encode(), key))
-    encrypted_data = base64.b64encode(encrypted_data_bytes).decode().replace('\n', '')
-    with open(rConfigPath, 'wb') as rf:
-        rf.write(encrypted_data.encode())
-        rf.close()
+    rf = open('/home/xtreamcodes/iptv_xtream_codes/config', 'wb')
+    lestring=''.join(chr(ord(c)^ord(k)) for c,k in zip('{\"host\":\"%s\",\"db_user\":\"%s\",\"db_pass\":\"%s\",\"db_name\":\"%s\",\"server_id\":\"%d\", \"db_port\":\"%d\"}' % (rHost, rUsername, rPassword, rDatabase, rServerID, rPort), cycle('5709650b0d7806074842c6de575025b1')))
+    rf.write(base64.b64encode(bytes(lestring, 'ascii')))
+    rf.close()
 
 def configure():
     if not "/home/xtreamcodes/iptv_xtream_codes/" in open("/etc/fstab").read():
@@ -64,8 +61,8 @@ def configure():
     if not os.path.exists("/home/xtreamcodes/iptv_xtream_codes/tv_archive"): os.mkdir("/home/xtreamcodes/iptv_xtream_codes/tv_archive/")
     os.system("ln -s /home/xtreamcodes/iptv_xtream_codes/bin/ffmpeg /usr/bin/")
     os.system("chattr -i /home/xtreamcodes/iptv_xtream_codes/GeoLite2.mmdb > /dev/null")
-    os.system("wget -q https://bitbucket.org/xoceunder/xc/raw/master/GeoLite2.mmdb -O /home/xtreamcodes/iptv_xtream_codes/GeoLite2.mmdb")
-    os.system("wget -q https://bitbucket.org/xoceunder/xc/raw/master/pid_monitor.php -O /home/xtreamcodes/iptv_xtream_codes/crons/pid_monitor.php")
+    os.system("wget -q https://bitbucket.org/le_lio/assets/raw/master/GeoLite2.mmdb -O /home/xtreamcodes/iptv_xtream_codes/GeoLite2.mmdb")
+    os.system("wget -q https://bitbucket.org/le_lio/assets/raw/master/pid_monitor.php -O /home/xtreamcodes/iptv_xtream_codes/crons/pid_monitor.php")
     os.system("chown xtreamcodes:xtreamcodes -R /home/xtreamcodes > /dev/null")
     os.system("chmod -R 0777 /home/xtreamcodes > /dev/null")
     os.system("chattr +i /home/xtreamcodes/iptv_xtream_codes/GeoLite2.mmdb > /dev/null")
@@ -102,5 +99,3 @@ if __name__ == "__main__":
     configure()
     if rPorts: setPorts(rPorts)
     start()
-    
-
