@@ -41,11 +41,11 @@ def getVersion():
     except: return ""
 
 def printc(rText, rColour=col.OKBLUE, rPadding=0):
-    print("%s â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” %s" % (rColour, col.ENDC))
-    for i in range(rPadding): print("%s â”‚                                                 â”‚ %s" % (rColour, col.ENDC))
-    print("%s â”‚ %s%s%s â”‚ %s" % (rColour, " "*round(23-(len(rText)/2)), rText, " "*round(46-(22-(len(rText)/2))-len(rText)), col.ENDC))
-    for i in range(rPadding): print("%s â”‚                                                 â”‚ %s" % (rColour, col.ENDC))
-    print("%s â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ %s" % (rColour, col.ENDC))
+    print("%s ┌─────────────────────────────────────────────────┐ %s" % (rColour, col.ENDC))
+    for i in range(rPadding): print("%s │                                                 │ %s" % (rColour, col.ENDC))
+    print("%s │ %s%s%s │ %s" % (rColour, " "*round(23-(len(rText)/2)), rText, " "*round(46-(22-(len(rText)/2))-len(rText)), col.ENDC))
+    for i in range(rPadding): print("%s │                                                 │ %s" % (rColour, col.ENDC))
+    print("%s └─────────────────────────────────────────────────┘ %s" % (rColour, col.ENDC))
     print(" ")
 
 def prepare(rType="MAIN"):
