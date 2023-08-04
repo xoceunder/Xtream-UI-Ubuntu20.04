@@ -41,11 +41,11 @@ def getVersion():
     except: return ""
 
 def printc(rText, rColour=col.OKBLUE, rPadding=0):
-    print("%s â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” %s" % (rColour, col.ENDC))
-    for i in range(rPadding): print("%s â”‚                                                 â”‚ %s" % (rColour, col.ENDC))
-    print("%s â”‚ %s%s%s â”‚ %s" % (rColour, " "*round(23-(len(rText)/2)), rText, " "*round(46-(22-(len(rText)/2))-len(rText)), col.ENDC))
-    for i in range(rPadding): print("%s â”‚                                                 â”‚ %s" % (rColour, col.ENDC))
-    print("%s â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ %s" % (rColour, col.ENDC))
+    print("%s ┌─────────────────────────────────────────────────┐ %s" % (rColour, col.ENDC))
+    for i in range(rPadding): print("%s │                                                 │ %s" % (rColour, col.ENDC))
+    print("%s │ %s%s%s │ %s" % (rColour, " "*round(23-(len(rText)/2)), rText, " "*round(46-(22-(len(rText)/2))-len(rText)), col.ENDC))
+    for i in range(rPadding): print("%s │                                                 │ %s" % (rColour, col.ENDC))
+    print("%s └─────────────────────────────────────────────────┘ %s" % (rColour, col.ENDC))
     print(" ")
 
 def prepare(rType="MAIN"):
@@ -54,7 +54,8 @@ def prepare(rType="MAIN"):
     printc("Preparing Installation")
     if os.path.isfile('/home/xtreamcodes/iptv_xtream_codes/config'):
         shutil.copyfile('/home/xtreamcodes/iptv_xtream_codes/config', '/tmp/config.xtmp')
-    os.system('chattr -i /home/xtreamcodes/iptv_xtream_codes/GeoLite2.mmdb > /dev/null')
+    if os.path.isfile('/home/xtreamcodes/iptv_xtream_codes/config'):    
+        os.system('chattr -i /home/xtreamcodes/iptv_xtream_codes/GeoLite2.mmdb > /dev/null')
     for rFile in ["/var/lib/dpkg/lock-frontend", "/var/cache/apt/archives/lock", "/var/lib/dpkg/lock"]:
         try: os.remove(rFile)
         except: pass
