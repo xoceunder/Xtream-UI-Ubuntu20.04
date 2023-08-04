@@ -116,7 +116,6 @@ def update(rType="MAIN"):
             return False
     rURL = rlink
     printc("Installing Admin Panel")
-    print ("\n")
     if os.path.exists("/tmp/update.zip"):
         try: is_ok = zipfile.ZipFile("/tmp/update.zip")
         except:
