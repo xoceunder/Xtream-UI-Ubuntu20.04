@@ -58,7 +58,6 @@ def prepare(rType="MAIN"):
         try: os.remove(rFile)
         except: pass
     os.system("apt-get update > /dev/null")
-
     os.system("apt-get -y full-upgrade > /dev/null")
     if rType == "MAIN":
         os.system("apt-get install -y software-properties-common > /dev/null")
