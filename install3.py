@@ -57,14 +57,14 @@ def prepare(rType="MAIN"):
     for rFile in ["/var/lib/dpkg/lock-frontend", "/var/cache/apt/archives/lock", "/var/lib/dpkg/lock"]:
         try: os.remove(rFile)
         except: pass
-    os.system("apt update > /dev/null")
-    os.system("apt -y full-upgrade > /dev/null")
+    os.system("apt-get update > /dev/null")
+    os.system("apt-get -y full-upgrade > /dev/null")
     if rType == "MAIN":
-        os.system("apt install -y software-properties-common > /dev/null")
-        os.system("apt update > /dev/null")
+        os.system("apt-get install -y software-properties-common > /dev/null")
+        os.system("apt-get update > /dev/null")
     for rPackage in rPackages:
         printc("Installing %s" % rPackage)
-        os.system("apt install %s -y > /dev/null" % rPackage)
+        os.system("apt-get install %s -y > /dev/null" % rPackage)
     printc("Installing pip3 and python3 paramiko")
     os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1 && pip3 install paramiko > /dev/null 2>&1")
     os.system("apt-get install -f > /dev/null") # Clean up above
