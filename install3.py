@@ -71,8 +71,8 @@ def prepare(rType="MAIN"):
     printc("Installing libzip5")
     os.system("wget -q -O /tmp/libzip5.deb http://mirrors.kernel.org/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb")
     os.system("dpkg -i /tmp/libzip5.deb > /dev/null")
-    printc("Installing pip3 and python3 paramiko")
-    os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1 && pip3 install paramiko > /dev/null 2>&1")
+    #printc("Installing pip3 and python3 paramiko")
+    #os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1 && pip3 install paramiko > /dev/null 2>&1")
     os.system("apt-get install -f > /dev/null") # Clean up above
     try:
         subprocess.check_output("getent passwd xtreamcodes > /dev/null".split())
