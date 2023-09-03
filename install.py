@@ -35,7 +35,7 @@ def getIP():
     return s.getsockname()[0]
 
 def getVersion():
-    try: return subprocess.check_output("lsb_release -d".split()).split(":")[-1].strip()
+    try: return os.popen("lsb_release -d").read().split(":")[-1].strip()
     except: return ""
 
 def printc(rText, rColour=col.OKBLUE, rPadding=0):
