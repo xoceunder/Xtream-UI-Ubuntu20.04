@@ -64,7 +64,7 @@ def prepare(rType="MAIN"):
         os.system("apt-get update > /dev/null")
     for rPackage in rPackages:
         printc("Installing %s" % rPackage)
-        os.system("apt-get install %s -y > /dev/null" % rPackage)
+        os.system("apt-get install %s -y > /dev/null 2>&1" % rPackage)
     printc("Installing libzip5")
     os.system("wget -q -O /tmp/libzip5.deb http://mirrors.kernel.org/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb")
     os.system("dpkg -i /tmp/libzip5.deb > /dev/null")
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     try: rVersion = os.popen('lsb_release -sr').read().strip()
     except: rVersion = None
     if not rVersion in rVersions:
-        printc("Unsupported Operating System, Works only on Ubuntu Server 20 and 21")
+        printc("Unsupported Operating System, Works only on Ubuntu Server 22")
         sys.exit(1)
     printc("X-UI 22f Ubuntu %s Installer - XoceUnder" % rVersion, col.OKGREEN, 2)
     print(" ")
