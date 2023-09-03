@@ -65,12 +65,12 @@ def prepare(rType="MAIN"):
     for rPackage in rPackages:
         printc("Installing %s" % rPackage)
         os.system("apt-get install %s -y > /dev/null 2>&1" % rPackage)
-    printc("Installing libzip5")
-    os.system("wget -q -O /tmp/libzip5.deb http://mirrors.kernel.org/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb")
-    os.system("dpkg -i /tmp/libzip5.deb > /dev/null")
     printc("Installing libssl")
     os.system("wget -q -O /tmp/libssl1.deb http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb")
     os.system("dpkg -i /tmp/libssl1.deb > /dev/null")
+    printc("Installing libzip5")
+    os.system("wget -q -O /tmp/libzip5.deb http://mirrors.kernel.org/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb")
+    os.system("dpkg -i /tmp/libzip5.deb > /dev/null")
     printc("Installing pip3 and python3 paramiko")
     os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1 && pip3 install paramiko > /dev/null 2>&1")
     os.system("apt-get install -f > /dev/null") # Clean up above
