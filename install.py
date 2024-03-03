@@ -17,15 +17,25 @@ rVersions = {
 }
 
 class col:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    YELLOW = '\033[33m'
-    ENDC = '\033[0m'
+    BLACK = '\033[30m'
+    RED = '\033[31m'
+    GREEN = '\033[32m'
+    YELLOW = '\033[33m' # orange on some systems
+    BLUE = '\033[34m'
+    MAGENTA = '\033[35m'
+    CYAN = '\033[36m'
+    LIGHT_GRAY = '\033[37m'
+    DARK_GRAY = '\033[90m'
+    BRIGHT_RED = '\033[91m'
+    BRIGHT_GREEN = '\033[92m'
+    BRIGHT_YELLOW = '\033[93m'
+    BRIGHT_BLUE = '\033[94m'
+    BRIGHT_MAGENTA = '\033[95m'
+    BRIGHT_CYAN = '\033[96m'
+    WHITE = '\033[97m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    ENDC = '\033[0m'
 
 def generate(length=19): return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(length))
 
@@ -38,7 +48,7 @@ def getVersion():
     try: return os.popen("lsb_release -d").read().split(":")[-1].strip()
     except: return ""
 
-def printc(rText, rColour=col.OKBLUE, rPadding=0, rLimit=46):
+def printc(rText, rColour=col.BRIGHT_GREEN, rPadding=0, rLimit=46):
     print("%s ┌─────────────────────────────────────────────────┐ %s" % (rColour, col.ENDC))
     for i in range(rPadding): print("%s │                                                 │ %s" % (rColour, col.ENDC))
     array = [rText[i:i+rLimit] for i in range(0, len(rText), rLimit)]
@@ -86,7 +96,7 @@ def install(rType="MAIN"):
     printc("Downloading Software")
     try: rURL = rDownloadURL[rInstall[rType]]
     except:
-        printc("Invalid download URL!", col.FAIL)
+        printc("Invalid download URL!", col.BRIGHT_RED)
         return False
     os.system('wget -q -O "/tmp/xtreamcodes.tar.gz" "%s"' % rURL)
     if os.path.exists("/tmp/xtreamcodes.tar.gz"):
@@ -95,12 +105,12 @@ def install(rType="MAIN"):
         try: os.remove("/tmp/xtreamcodes.tar.gz")
         except: pass
         return True
-    printc("Failed to download installation file!", col.FAIL)
+    printc("Failed to download installation file!", col.BRIGHT_RED)
     return False
 
 def update(rType="MAIN"):
     if rType == "UPDATE":
-        printc("Enter the link of release_xyz.zip file:", col.WARNING)
+        printc("Enter the link of release_xyz.zip file:", col.BRIGHT_RED)
         rlink = input('Example: https://bitbucket.org/xoceunder/x-ui/raw/master/release_22f.zip\n\nNow enter the link:\n\n')
     else:
         rlink = "https://bitbucket.org/xoceunder/x-ui/raw/master/release_22f.zip"
@@ -109,7 +119,7 @@ def update(rType="MAIN"):
     if os.path.exists("/tmp/update.zip"):
         try: is_ok = zipfile.ZipFile("/tmp/update.zip")
         except:
-            printc("Invalid link or zip file is corrupted!", col.FAIL)
+            printc("Invalid link or zip file is corrupted!", col.BRIGHT_RED)
             os.remove("/tmp/update.zip")
             return False
     rURL = rlink
@@ -117,7 +127,7 @@ def update(rType="MAIN"):
     if os.path.exists("/tmp/update.zip"):
         try: is_ok = zipfile.ZipFile("/tmp/update.zip")
         except:
-            printc("Invalid link or zip file is corrupted!", col.FAIL)
+            printc("Invalid link or zip file is corrupted!", col.BRIGHT_RED)
             os.remove("/tmp/update.zip")
             return False
         printc("Updating Software")
@@ -127,7 +137,7 @@ def update(rType="MAIN"):
         try: os.remove("/tmp/update.zip")
         except: pass
         return True
-    printc("Failed to download installation file!", col.FAIL)
+    printc("Failed to download installation file!", col.BRIGHT_RED)
     return False
 
 def mysql(rUsername, rPassword):
@@ -142,7 +152,7 @@ def mysql(rUsername, rPassword):
         rFile.write(rMySQLCnf)
         rFile.close()
         os.system("systemctl restart mariadb > /dev/null")
-    #printc("Enter MySQL Root Password:", col.WARNING)
+    #printc("Enter MySQL Root Password:", col.BRIGHT_RED)
     for i in range(5):
         rMySQLRoot = "" #raw_input("  ")
         print(" ")
@@ -162,7 +172,7 @@ def mysql(rUsername, rPassword):
             try: os.remove("/home/xtreamcodes/iptv_xtream_codes/database.sql")
             except: pass
             return True
-        except: printc("Invalid password! Try again", col.FAIL)
+        except: printc("Invalid password! Try again", col.BRIGHT_RED)
     return False
 
 def encrypt(rHost="127.0.0.1", rUsername="user_iptvpro", rPassword="", rDatabase="xtream_iptvpro", rServerID=1, rPort=7999):
@@ -244,7 +254,7 @@ if __name__ == "__main__":
     if not rVersion in rVersions:
         printc("Unsupported Operating System, Works only on Ubuntu Server 20 and 21")
         sys.exit(1)
-    printc("X-UI 22f Ubuntu %s Installer - XoceUnder" % rVersion, col.OKGREEN, 2)
+    printc("X-UI 22f Ubuntu %s Installer - XoceUnder" % rVersion, col.GREEN, 2)
     print(" ")
     rType = input("  Installation Type [MAIN, LB, UPDATE]: ")
     print(" ")
@@ -263,7 +273,7 @@ if __name__ == "__main__":
         rDatabase = "xtream_iptvpro"
         rPort = 7999
         if len(rHost) > 0 and len(rPassword) > 0 and rServerID > -1:
-            printc("Start installation? Y/N", col.WARNING)
+            printc("Start installation? Y/N", col.BRIGHT_RED)
             if input("  ").upper() == "Y":
                 print(" ")
                 rRet = prepare(rType.upper())
@@ -276,20 +286,20 @@ if __name__ == "__main__":
                     modifyNginx()
                     update(rType.upper())
                 start()
-                printc("Installation completed!", col.OKGREEN, 2)
+                printc("Installation completed!", col.GREEN, 2)
                 if rType.upper() == "MAIN":
                     printc("Please store your MySQL password!")
                     printc(rPassword)
                     printc("Admin UI Wan IP: http://%s:25500" % getIP())
                     printc("Admin UI default login is admin/admin")
-            else: printc("Installation cancelled", col.FAIL)
-        else: printc("Invalid entries", col.FAIL)
+            else: printc("Installation cancelled", col.BRIGHT_RED)
+        else: printc("Invalid entries", col.BRIGHT_RED)
     elif rType.upper() == "UPDATE":
         if os.path.exists("/home/xtreamcodes/iptv_xtream_codes/wwwdir/api.php"):
-            printc("Update Admin Panel? Y/N?", col.WARNING)
+            printc("Update Admin Panel? Y/N?", col.BRIGHT_RED)
             if input("  ").upper() == "Y":
                 if not update(rType.upper()): sys.exit(1)
-                printc("Installation completed!", col.OKGREEN, 2)
+                printc("Installation completed!", col.GREEN, 2)
                 start()
-            else: printc("Install Xtream Codes Main first!", col.FAIL)
-    else: printc("Invalid installation type", col.FAIL)
+            else: printc("Install Xtream Codes Main first!", col.BRIGHT_RED)
+    else: printc("Invalid installation type", col.BRIGHT_RED)
