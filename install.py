@@ -273,7 +273,7 @@ if __name__ == "__main__":
         rDatabase = "xtream_iptvpro"
         rPort = 7999
         if len(rHost) > 0 and len(rPassword) > 0 and rServerID > -1:
-            printc("Start installation? Y/N", col.BRIGHT_RED)
+            printc("Start installation? Y/N", col.BRIGHT_YELLOW)
             if input("  ").upper() == "Y":
                 print(" ")
                 rRet = prepare(rType.upper())
@@ -296,7 +296,7 @@ if __name__ == "__main__":
         else: printc("Invalid entries", col.BRIGHT_RED)
     elif rType.upper() == "UPDATE":
         if os.path.exists("/home/xtreamcodes/iptv_xtream_codes/wwwdir/api.php"):
-            printc("Update Admin Panel? Y/N?", col.BRIGHT_RED)
+            printc("Update Admin Panel? Y/N?", col.BRIGHT_YELLOW)
             if input("  ").upper() == "Y":
                 if not update(rType.upper()): sys.exit(1)
                 printc("Installation completed!", col.GREEN, 2)
