@@ -288,10 +288,10 @@ if __name__ == "__main__":
                 start()
                 printc("Installation completed!", col.GREEN, 2)
                 if rType.upper() == "MAIN":
-                    printc("Please store your MySQL password!", col.BRIGHT_YELLOW)
-                    printc(rPassword, col.BRIGHT_YELLOW)
+                    printc("Please store your MySQL password: %s" % rPassword, col.BRIGHT_YELLOW)
                     printc("Admin UI Wan IP: http://%s:25500" % getIP(), col.BRIGHT_YELLOW)
                     printc("Admin UI default login is admin/admin", col.BRIGHT_YELLOW)
+                    printc("Save Credentials is file to /root/credentials.txt", col.BRIGHT_YELLOW)
                     rFile = open("/root/credentials.txt", "w")
                     rFile.write("MySQL password: %s\n" % rPassword)
                     rFile.write("Admin UI Wan IP: http://%s:25500\n" % getIP())
