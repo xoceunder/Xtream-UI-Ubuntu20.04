@@ -288,10 +288,10 @@ if __name__ == "__main__":
                 start()
                 printc("Installation completed!", col.GREEN, 2)
                 if rType.upper() == "MAIN":
-                    printc("Please store your MySQL password!")
-                    printc(rPassword)
-                    printc("Admin UI Wan IP: http://%s:25500" % getIP())
-                    printc("Admin UI default login is admin/admin")
+                    printc("Please store your MySQL password!", col.BRIGHT_YELLOW)
+                    printc(rPassword, col.BRIGHT_YELLOW)
+                    printc("Admin UI Wan IP: http://%s:25500" % getIP(), col.BRIGHT_YELLOW)
+                    printc("Admin UI default login is admin/admin", col.BRIGHT_YELLOW)
             else: printc("Installation cancelled", col.BRIGHT_RED)
         else: printc("Invalid entries", col.BRIGHT_RED)
     elif rType.upper() == "UPDATE":
