@@ -292,6 +292,10 @@ if __name__ == "__main__":
                     printc(rPassword, col.BRIGHT_YELLOW)
                     printc("Admin UI Wan IP: http://%s:25500" % getIP(), col.BRIGHT_YELLOW)
                     printc("Admin UI default login is admin/admin", col.BRIGHT_YELLOW)
+                    lines = ["MySQL password: %s\n" % rPassword, "Admin UI Wan IP: http://%s:25500\n" % getIP(),"Admin UI default login is admin/admin\n"]
+                    rFile = open("/root/credentials.txt", "wb")
+                    rFile.writelines(lines)
+                    rFile.close()
             else: printc("Installation cancelled", col.BRIGHT_RED)
         else: printc("Invalid entries", col.BRIGHT_RED)
     elif rType.upper() == "UPDATE":
