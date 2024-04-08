@@ -68,6 +68,7 @@ def prepare(rType="MAIN"):
     for rFile in ["/var/lib/dpkg/lock-frontend", "/var/cache/apt/archives/lock", "/var/lib/dpkg/lock"]:
         try: os.remove(rFile)
         except: pass
+    printc("Updating Operating System")
     os.system("apt-get update > /dev/null")
     os.system("apt-get -y full-upgrade > /dev/null")
     if rType == "MAIN":
@@ -252,7 +253,7 @@ if __name__ == "__main__":
     try: rVersion = os.popen('lsb_release -sr').read().strip()
     except: rVersion = None
     if not rVersion in rVersions:
-        printc("Unsupported Operating System, Works only on Ubuntu Server 20 and 21")
+        printc("Unsupported Operating System, Works only on Ubuntu Server 20")
         sys.exit(1)
     printc("X-UI 22f Ubuntu %s Installer - XoceUnder" % rVersion, col.GREEN, 2)
     print(" ")
