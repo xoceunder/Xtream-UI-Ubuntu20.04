@@ -108,7 +108,7 @@ def install(rType="MAIN"):
         return True
     printc("Failed to download installation file!", col.BRIGHT_RED)
     return False
-
+    
 def update(rType="MAIN"):
     if rType == "UPDATE":
         printc("Enter the link of release_xyz.zip file:", col.BRIGHT_RED)
