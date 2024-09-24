@@ -6,7 +6,7 @@ from zipfile import ZipFile
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
-rDownloadURL = "https://bitbucket.org/xoceunder/x-ui/raw/master/sub_xui_xoceunder.tar.gz"
+rDownloadURL = "https://bitbucket.org/xoceunder/x-ui/raw/master/sub_xui_xoceunder.zip"
 rPackages = ["libcurl4", "libxslt1-dev", "libgeoip-dev", "e2fsprogs", "wget", "mcrypt", "nscd", "htop", "zip", "unzip", "mc", "libzip5"]
 
 def getVersion():
@@ -29,14 +29,14 @@ def prepare():
 def install():
     global rInstall, rDownloadURL
     rURL = rDownloadURL
-    os.system('wget -q -O "/tmp/xtreamcodes.tar.gz" "%s"' % rURL)
-    if os.path.exists("/tmp/xtreamcodes.tar.gz"):
-        os.system('tar -zxvf "/tmp/xtreamcodes.tar.gz" -C "/home/xtreamcodes/" > /dev/null')
-        try: os.remove("/tmp/xtreamcodes.tar.gz")
+    os.system('wget -q -O "/tmp/xtreamcodes.zip" "%s"' % rURL)
+    if os.path.exists("/tmp/xtreamcodes.zip"):
+        os.system('unzip "/tmp/xtreamcodes.zip" -d "/home/xtreamcodes/" > /dev/null')
+        try: os.remove("/tmp/xtreamcodes.zip")
         except: pass
         return True
     return False
-
+    
 def encrypt(rHost="127.0.0.1", rUsername="user_iptvpro", rPassword="", rDatabase="xtream_iptvpro", rServerID=1, rPort=7999):
     try: os.remove("/home/xtreamcodes/iptv_xtream_codes/config")
     except: pass
