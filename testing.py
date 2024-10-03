@@ -22,7 +22,9 @@ rVersions = {
     "16.04": "xenial",
     "18.04": "bionic",
     "20.04": "focal",
+    "20.10": "groovy",
     "21.04": "hirsute",
+    "21.10": "impish",
     "22.04": "jammy"
 }
 
@@ -84,59 +86,38 @@ def prepare(rType="MAIN"):
         if os.path.exists(rFile):
             try:
                 os.remove(rFile)
-            except FileNotFoundError:
+            except:
                 pass
     printc("Updating Operating System")
-    subprocess.run("apt-get update -y > /dev/null 2>&1", shell=True)
-    subprocess.run("apt-get -y full-upgrade > /dev/null 2>&1", shell=True)
+    os.system("apt-get update > /dev/null 2>&1")
+    os.system("apt-get -y full-upgrade > /dev/null 2>&1")
     if rType == "MAIN":
         printc("Install MariaDB 10.6 repository")
-        subprocess.run("apt-get install -y software-properties-common > /dev/null 2>&1", shell=True)
-        subprocess.run("curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup > /dev/null 2>&1", shell=True)
-        subprocess.run("sudo bash mariadb_repo_setup --mariadb-server-version=10.6 > /dev/null 2>&1", shell=True)
-        subprocess.run("apt-get update -y > /dev/null 2>&1", shell=True)
+        os.system("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install software-properties-common > /dev/null 2>&1")
+        if rVersion in rVersions:
+            printc("Adding repo: Ubuntu %s " % rVersion)
+            os.system("sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 > /dev/null 2>&1")
+            os.system("sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.6/ubuntu %s main' > /dev/null 2>&1" % rVersions[rVersion])
+        os.system("apt-get update > /dev/null 2>&1")
     for rPackage in rRemove:
-        if is_installed(rPackage):
-            printc("Removing %s" % rPackage)
-            subprocess.run(f"apt-get remove {rPackage} -y > /dev/null 2>&1", shell=True)
+        printc("Removing %s" % rPackage)
+        os.system("sudo apt-get remove %s -y > /dev/null" % rPackage)
     for rPackage in rPackages:
-        if not is_installed(rPackage):
-            printc("Installing %s" % rPackage)
-            subprocess.run("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null 2>&1", shell=True)
-            subprocess.run("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null 2>&1", shell=True)
-            subprocess.run(f"apt-get install {rPackage} -y > /dev/null 2>&1", shell=True)
-    if not is_installed("libssl1.1"):
-        printc("Installing libssl1.1")
-        subprocess.run("wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1 && sudo dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1 && rm -rf libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1", shell=True)
-    if not is_installed("libzip5"):
-        printc("Installing libzip5")
-        subprocess.run("wget http://archive.ubuntu.com/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1 && sudo dpkg -i libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1 && rm -rf libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1", shell=True)
-    subprocess.run("sudo apt-get install -f -y > /dev/null 2>&1", shell=True)
-    python_installed = is_installed("python2.7")
-    pip_installed = subprocess.run("pip2.7 --version > /dev/null 2>&1", shell=True).returncode == 0
-    paramiko_installed = subprocess.run("pip2.7 show paramiko > /dev/null 2>&1", shell=True).returncode == 0
-
-    if not python_installed or not pip_installed or not paramiko_installed:
-        printc("Installing python2 & pip2 & paramiko...")
-        subprocess.run("sudo apt install -y build-essential checkinstall libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev wget tar > /dev/null 2>&1", shell=True)
-
-        if not python_installed:
-            subprocess.run("cd /usr/src && sudo wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz > /dev/null 2>&1 && sudo tar xzf Python-2.7.18.tgz > /dev/null 2>&1 && cd Python-2.7.18 && sudo ./configure --enable-optimizations > /dev/null 2>&1 && sudo make altinstall > /dev/null 2>&1", shell=True)
-
-        if not pip_installed:
-            subprocess.run("curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py > /dev/null 2>&1 && sudo python2.7 get-pip.py > /dev/null 2>&1", shell=True)
-
-        if not paramiko_installed:
-            subprocess.run("pip2.7 install paramiko > /dev/null 2>&1", shell=True)
-
-    subprocess.run("apt-get install -f -y > /dev/null 2>&1", shell=True)
-
+        printc("Installing %s" % rPackage)
+        os.system("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null")
+        os.system("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null")
+        os.system("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install %s" % rPackage)
+    printc("Installing pip3")
+    os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1")
+    printc("Installing pip modules")
+    os.system("pip3 install ndg-httpsclient > /dev/null 2>&1 && pip3 install pyopenssl > /dev/null 2>&1 && pip3 install pyasn1 > /dev/null 2>&1")
+    os.system("apt-get install -f > /dev/null") # Clean up above
     try:
         subprocess.check_output("getent passwd xtreamcodes > /dev/null".split())
     except:
         # Create User
         printc("Creating user xtreamcodes")
-        subprocess.run("adduser --system --shell /bin/false --group --disabled-login xtreamcodes > /dev/null 2>&1", shell=True)
+        os.system("adduser --system --shell /bin/false --group --disabled-login xtreamcodes > /dev/null")
     if not os.path.exists("/home/xtreamcodes"): os.mkdir("/home/xtreamcodes")
     return True
 
@@ -334,7 +315,7 @@ if __name__ == "__main__":
     if not rVersion in rVersions:
         printc("Unsupported Operating System, Ubuntu %s" % rVersion, col.GREEN, 2)
         sys.exit(1)
-    printc("X-UI Ubuntu %s - Moded XoceUnder" % rVersion, col.GREEN, 2)
+    printc("XtreamUI 22f Ubuntu %s Installer - XoceUnder" % rVersion, col.GREEN, 2)
     print(" ")
     rType = input("  Installation Type [MAIN, LB, UPDATE]: ")
     print(" ")
