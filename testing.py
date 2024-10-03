@@ -102,10 +102,10 @@ def prepare(rType="MAIN"):
     for rPackage in rRemove:
         printc("Removing %s" % rPackage)
         os.system("sudo apt-get remove %s -y > /dev/null" % rPackage)
+    os.system("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null")
+    os.system("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null")
     for rPackage in rPackages:
         printc("Installing %s" % rPackage)
-        os.system("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null")
-        os.system("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null")
         os.system("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install %s" % rPackage)
     printc("Installing pip3")
     os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1")
