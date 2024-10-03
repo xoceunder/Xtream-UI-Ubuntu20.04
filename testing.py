@@ -95,9 +95,9 @@ def prepare(rType="MAIN"):
         printc("Install MariaDB 10.6 repository")
         os.system("apt-get install -y software-properties-common > /dev/null")
         if rVersion in rVersions:
-            printc("Adding repo: Ubuntu %s - %s" % (rVersion, rVersions[rVersion]))
+            printc("Adding repo: Ubuntu %s " % rVersion)
             os.system("apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 >/dev/null 2>&1")
-            os.system("sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.6/ubuntu %s main' > /dev/null"% rVersions[rVersion])
+            os.system("add-apt-repository 'deb [arch=amd64,arm64,ppc64el] http://mirror.lstn.net/mariadb/repo/10.6/ubuntu %s main' > /dev/null"% rVersions[rVersion])
         os.system("apt-get update > /dev/null")
     for rPackage in rRemove:
         printc("Removing %s" % rPackage)
