@@ -1,20 +1,31 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import subprocess, io, os, random, string, sys, shutil, socket, zipfile, urllib.request, urllib.error, urllib.parse, json, base64
+import subprocess, os, random, string, sys, shutil, socket, zipfile, urllib.request, urllib.error, urllib.parse, json, base64, io, time
 from itertools import cycle
 from zipfile import ZipFile
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
-rPath = os.path.dirname(os.path.realpath(__file__))
 rDownloadURL = {"main": "https://bitbucket.org/xoceunder/x-ui/raw/master/main_xui_xoceunder.zip", "sub": "https://bitbucket.org/xoceunder/x-ui/raw/master/sub_xui_xoceunder.zip"}
-rPackages = ["libcurl4", "libxslt1-dev", "libgeoip-dev", "libonig-dev", "e2fsprogs", "wget", "mcrypt", "nscd", "htop", "zip", "unzip", "mc", "mariadb-server", "libpng16-16", "libzip5", "python3-paramiko", "python-is-python3"]
+rPackages = ["cpufrequtils", "iproute2", "python", "net-tools", "dirmngr", "gpg-agent", "software-properties-common", "libcurl4", "libxslt1-dev", "libgeoip-dev", "libonig-dev", "e2fsprogs", "wget", "sysstat", "alsa-utils", "v4l-utils", "mcrypt", "nscd", "htop", "iptables-persistent", "libjpeg-dev", "libpng-dev", "php-ssh2", "xz-utils", "zip", "unzip", "mc", "libpng16-16", "libzip5", "mariadb-server", "rsync"]
+rRemove = ["mysql-server"]
 rInstall = {"MAIN": "main", "LB": "sub"}
 rUpdate = {"UPDATE": "update"}
 rMySQLCnf = base64.b64decode("IyBYdHJlYW0gQ29kZXMKCltjbGllbnRdCnBvcnQgICAgICAgICAgICA9IDMzMDYKCltteXNxbGRfc2FmZV0KbmljZSAgICAgICAgICAgID0gMAoKW215c3FsZF0KdXNlciAgICAgICAgICAgID0gbXlzcWwKcG9ydCAgICAgICAgICAgID0gNzk5OQpiYXNlZGlyICAgICAgICAgPSAvdXNyCmRhdGFkaXIgICAgICAgICA9IC92YXIvbGliL215c3FsCnRtcGRpciAgICAgICAgICA9IC90bXAKbGMtbWVzc2FnZXMtZGlyID0gL3Vzci9zaGFyZS9teXNxbApza2lwLWV4dGVybmFsLWxvY2tpbmcKc2tpcC1uYW1lLXJlc29sdmU9MQoKYmluZC1hZGRyZXNzICAgICAgICAgICAgPSAqCmtleV9idWZmZXJfc2l6ZSA9IDEyOE0KCm15aXNhbV9zb3J0X2J1ZmZlcl9zaXplID0gNE0KbWF4X2FsbG93ZWRfcGFja2V0ICAgICAgPSA2NE0KbXlpc2FtLXJlY292ZXItb3B0aW9ucyA9IEJBQ0tVUAptYXhfbGVuZ3RoX2Zvcl9zb3J0X2RhdGEgPSA4MTkyCnF1ZXJ5X2NhY2hlX2xpbWl0ICAgICAgID0gNE0KcXVlcnlfY2FjaGVfc2l6ZSAgICAgICAgPSAwCnF1ZXJ5X2NhY2hlX3R5cGUJPSAwCgpleHBpcmVfbG9nc19kYXlzICAgICAgICA9IDEwCm1heF9iaW5sb2dfc2l6ZSAgICAgICAgID0gMTAwTQoKbWF4X2Nvbm5lY3Rpb25zICA9IDIwMDAgI3JlY29tbWVuZGVkIGZvciAxNkdCIHJhbSAKYmFja19sb2cgPSA0MDk2Cm9wZW5fZmlsZXNfbGltaXQgPSAxNjM4NAppbm5vZGJfb3Blbl9maWxlcyA9IDE2Mzg0Cm1heF9jb25uZWN0X2Vycm9ycyA9IDMwNzIKdGFibGVfb3Blbl9jYWNoZSA9IDQwOTYKdGFibGVfZGVmaW5pdGlvbl9jYWNoZSA9IDQwOTYKCgp0bXBfdGFibGVfc2l6ZSA9IDFHCm1heF9oZWFwX3RhYmxlX3NpemUgPSAxRwoKaW5ub2RiX2J1ZmZlcl9wb29sX3NpemUgPSAxMkcgI3JlY29tbWVuZGVkIGZvciAxNkdCIHJhbQppbm5vZGJfYnVmZmVyX3Bvb2xfaW5zdGFuY2VzID0gMQppbm5vZGJfcmVhZF9pb190aHJlYWRzID0gNjQKaW5ub2RiX3dyaXRlX2lvX3RocmVhZHMgPSA2NAppbm5vZGJfdGhyZWFkX2NvbmN1cnJlbmN5ID0gMAppbm5vZGJfZmx1c2hfbG9nX2F0X3RyeF9jb21taXQgPSAwCmlubm9kYl9mbHVzaF9tZXRob2QgPSBPX0RJUkVDVApwZXJmb3JtYW5jZV9zY2hlbWEgPSBPTgppbm5vZGItZmlsZS1wZXItdGFibGUgPSAxCmlubm9kYl9pb19jYXBhY2l0eT0yMDAwMAppbm5vZGJfdGFibGVfbG9ja3MgPSAwCmlubm9kYl9sb2NrX3dhaXRfdGltZW91dCA9IDAKaW5ub2RiX2RlYWRsb2NrX2RldGVjdCA9IDAKaW5ub2RiX2xvZ19maWxlX3NpemUgPSA1MTJNCgpzcWwtbW9kZT0iTk9fRU5HSU5FX1NVQlNUSVRVVElPTiIKCltteXNxbGR1bXBdCnF1aWNrCnF1b3RlLW5hbWVzCm1heF9hbGxvd2VkX3BhY2tldCAgICAgID0gMTZNCgpbbXlzcWxdCgpbaXNhbWNoa10Ka2V5X2J1ZmZlcl9zaXplICAgICAgICAgICAgICA9IDE2TQo=")
+rSystemd = "[Unit]\nSourcePath=/home/xtreamcodes/iptv_xtream_codes/xtreamcodes\nDescription=XtreamCodes Service\nAfter=network.target\nStartLimitIntervalSec=0\n\n[Service]\nType=simple\nUser=root\nRestart=always\nRestartSec=1\nExecStart=/bin/bash /home/xtreamcodes/iptv_xtream_codes/xtreamcodes start\nExecReload=/bin/bash /home/xtreamcodes/iptv_xtream_codes/xtreamcodes restart\nExecStop=/bin/bash /home/xtreamcodes/iptv_xtream_codes/xtreamcodes stop\n\n[Install]\nWantedBy=multi-user.target"
+rSysCtl = "# XtreamCodes\n\nnet.ipv4.tcp_congestion_control = bbr\nnet.core.default_qdisc = fq\nnet.ipv4.tcp_rmem = 8192 87380 134217728\nnet.ipv4.udp_rmem_min = 16384\nnet.core.rmem_default = 262144\nnet.core.rmem_max = 268435456\nnet.ipv4.tcp_wmem = 8192 65536 134217728\nnet.ipv4.udp_wmem_min = 16384\nnet.core.wmem_default = 262144\nnet.core.wmem_max = 268435456\nnet.core.somaxconn = 1000000\nnet.core.netdev_max_backlog = 250000\nnet.core.optmem_max = 65535\nnet.ipv4.tcp_max_tw_buckets = 1440000\nnet.ipv4.tcp_max_orphans = 16384\nnet.ipv4.ip_local_port_range = 2000 65000\nnet.ipv4.tcp_no_metrics_save = 1\nnet.ipv4.tcp_slow_start_after_idle = 0\nnet.ipv4.tcp_fin_timeout = 15\nnet.ipv4.tcp_keepalive_time = 300\nnet.ipv4.tcp_keepalive_probes = 5\nnet.ipv4.tcp_keepalive_intvl = 15\nfs.file-max=20970800\nfs.nr_open=20970800\nfs.aio-max-nr=20970800\nnet.ipv4.tcp_timestamps = 1\nnet.ipv4.tcp_window_scaling = 1\nnet.ipv4.tcp_mtu_probing = 1\nnet.ipv4.route.flush = 1\nnet.ipv6.route.flush = 1"
+
+rPath = os.path.dirname(os.path.realpath(__file__))
 
 rVersions = {
-    "20.04": "focal"
+    "14.04": "trusty",
+    "16.04": "xenial",
+    "18.04": "bionic",
+    "20.04": "focal",
+    "20.10": "groovy",
+    "21.04": "hirsute",
+    "21.10": "impish",
+    "22.04": "jammy"
 }
 
 class col:
@@ -71,26 +82,35 @@ def prepare(rType="MAIN"):
     printc("Preparing Installation")
     if os.path.isfile('/home/xtreamcodes/iptv_xtream_codes/config'):
         shutil.copyfile('/home/xtreamcodes/iptv_xtream_codes/config', '/tmp/config.xtmp')
-    for rFile in ["/var/lib/dpkg/lock-frontend","/var/cache/apt/archives/lock","/var/lib/dpkg/lock",]:
+    for rFile in ["/var/lib/dpkg/lock-frontend","/var/cache/apt/archives/lock","/var/lib/dpkg/lock"]:
         if os.path.exists(rFile):
             try:
                 os.remove(rFile)
             except:
                 pass
     printc("Updating Operating System")
-    os.system("apt-get update > /dev/null 2>&1")
-    os.system("apt-get -yq full-upgrade > /dev/null 2>&1")
+    os.system("apt-get update > /dev/null")
+    os.system("apt-get -yq full-upgrade > /dev/null")
     if rType == "MAIN":
-        printc("Install MariaDB 10.5 repository")
-        os.system("apt-get install -yq software-properties-common > /dev/null 2>&1")
-        os.system("apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 >/dev/null 2>&1")
-        os.system("add-apt-repository 'deb [arch=amd64,arm64,ppc64el] http://mirror.lstn.net/mariadb/repo/10.5/ubuntu focal main'  > /dev/null")
+        printc("Install MariaDB 10.6 repository")
+        os.system("apt-get install -yq software-properties-common > /dev/null")
+        if rVersion in rVersions:
+            printc("Adding repo: Ubuntu %s" % rVersion)
+            os.system("apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 > /dev/null")
+            os.system("sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.6/ubuntu %s main' > /dev/null"% rVersions[rVersion])
         os.system("apt-get update > /dev/null")
+    for rPackage in rRemove:
+        printc("Removing %s" % rPackage)
+        os.system("sudo apt-get remove %s -y > /dev/null" % rPackage)
     for rPackage in rPackages:
         printc("Installing %s" % rPackage)
+        os.system("sudo debconf-set-selections <<< 'iptables-persistent iptables-persistent/autosave_v4 boolean true' > /dev/null")
+        os.system("sudo debconf-set-selections <<< 'iptables-persistent iptables-persistent/autosave_v6 boolean true' > /dev/null")
         os.system("apt-get install %s -y > /dev/null" % rPackage)
-    printc("Installing pip2 and python2 paramiko")
-    os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python2 get-pip.py > /dev/null 2>&1 && pip2 install paramiko > /dev/null 2>&1")
+    printc("Installing pip3")
+    os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1")
+    printc("Installing pip modules")
+    os.system("pip3 install ndg-httpsclient > /dev/null 2>&1 && pip3 install pyopenssl > /dev/null 2>&1 && pip3 install pyasn1 > /dev/null 2>&1")
     os.system("apt-get install -f > /dev/null") # Clean up above
     try:
         subprocess.check_output("getent passwd xtreamcodes > /dev/null".split())
@@ -212,16 +232,47 @@ def decrypt():
 def configure():
     printc("Configuring System")
     if not "/home/xtreamcodes/iptv_xtream_codes/" in open("/etc/fstab").read():
-        rFile = open("/etc/fstab", "a")
+        rFile = io.open("/etc/fstab", "a", encoding="utf-8")
         rFile.write("tmpfs /home/xtreamcodes/iptv_xtream_codes/streams tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=90% 0 0\ntmpfs /home/xtreamcodes/iptv_xtream_codes/tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=2G 0 0")
         rFile.close()
     if not "xtreamcodes" in open("/etc/sudoers").read():
-        os.system('echo "xtreamcodes ALL = (root) NOPASSWD: /sbin/iptables, /usr/bin/chattr" >> /etc/sudoers')
-    if not os.path.exists("/etc/init.d/xtreamcodes"):
-        rFile = open("/etc/init.d/xtreamcodes", "w")
-        rFile.write("#! /bin/bash\n/home/xtreamcodes/iptv_xtream_codes/start_services.sh")
+        os.system('echo "xtreamcodes ALL = (root) NOPASSWD: /sbin/iptables, /usr/bin/chattr, /usr/bin/python3, /usr/bin/python" >> /etc/sudoers')
+    if os.path.exists("/etc/init.d/xtreamcodes"):
+        os.remove("/etc/init.d/xtreamcodes")
+    if not os.path.exists("/home/xtreamcodes/iptv_xtream_codes/xtreamcodes"): os.system("wget -q https://github.com/xoceunder/Xtream-UI-Ubuntu20.04/raw/main/xtreamcodes -O /home/xtreamcodes/iptv_xtream_codes/xtreamcodes")
+    if not os.path.exists("/etc/systemd/system/xtreamcodes.service"):
+        rFile = io.open("/etc/systemd/system/xtreamcodes.service", "w", encoding="utf-8")
+        rFile.write(rSystemd)
         rFile.close()
-        os.system("chmod +x /etc/init.d/xtreamcodes > /dev/null")
+        os.system("sudo chmod +x /etc/systemd/system/xtreamcodes.service")
+        os.system("sudo systemctl daemon-reload")
+        os.system("sudo systemctl enable xtreamcodes")
+    print("Custom sysctl.conf - If you have your own custom sysctl.conf, type N or it will be overwritten. If you don't know what a sysctl configuration is, type Y as it will correctly set your TCP settings and open file limits.")
+    print(" ")
+    while True:
+        rAnswer = input("Overwrite sysctl configuration? Recommended! (Y / N): ")
+        if rAnswer.upper() in ["Y", "N"]:
+            break
+    if rAnswer.upper() == "Y":
+        try:
+            os.system("sudo modprobe ip_conntrack")
+        except:
+            pass
+        try:
+            rFile = io.open("/etc/sysctl.conf", "w", encoding="utf-8")
+            rFile.write(rSysCtl)
+            rFile.close()
+            os.system("sudo sysctl -p >/dev/null 2>&1")
+            rFile = open("/home/xtreamcodes/iptv_xtream_codes/sysctl.on", "w")
+            rFile.close()
+        except:
+            printc("Failed to write to sysctl file.", col.BRIGHT_RED)
+    else:
+        if os.path.exists("/home/xtreamcodes/iptv_xtream_codes/sysctl.on"):
+            os.remove("/home/xtreamcodes/iptv_xtream_codes/sysctl.on")
+    if not "DefaultLimitNOFILE=655350" in open("/etc/systemd/system.conf").read():
+        os.system('sudo echo "\nDefaultLimitNOFILE=655350" >> "/etc/systemd/system.conf"')
+        os.system('sudo echo "\nDefaultLimitNOFILE=655350" >> "/etc/systemd/user.conf"')
     try: os.remove("/usr/bin/ffmpeg")
     except: pass
     if not os.path.exists("/home/xtreamcodes/iptv_xtream_codes/tv_archive"): os.mkdir("/home/xtreamcodes/iptv_xtream_codes/tv_archive/")
@@ -232,20 +283,20 @@ def configure():
     os.system("chmod -R 0777 /home/xtreamcodes > /dev/null")
     os.system("chattr -ai /home/xtreamcodes/iptv_xtream_codes/GeoLite2.mmdb > /dev/null")
     os.system("sudo chmod 0777 /home/xtreamcodes/iptv_xtream_codes/GeoLite2.mmdb > /dev/null")
-    os.system("sed -i 's|chown -R xtreamcodes:xtreamcodes /home/xtreamcodes|chown -R xtreamcodes:xtreamcodes /home/xtreamcodes 2>/dev/null|g' /home/xtreamcodes/iptv_xtream_codes/start_services.sh")
-    os.system("chmod +x /home/xtreamcodes/iptv_xtream_codes/start_services.sh > /dev/null")
+    #os.system("sed -i 's|chown -R xtreamcodes:xtreamcodes /home/xtreamcodes|chown -R xtreamcodes:xtreamcodes /home/xtreamcodes 2>/dev/null|g' /home/xtreamcodes/iptv_xtream_codes/start_services.sh")
+    #os.system("chmod +x /home/xtreamcodes/iptv_xtream_codes/start_services.sh > /dev/null")
     os.system("mount -a")
     os.system("chmod 0700 /home/xtreamcodes/iptv_xtream_codes/config > /dev/null")
     os.system("sed -i 's|echo \"Xtream Codes Reborn\";|header(\"Location: https://www.google.com/\");|g' /home/xtreamcodes/iptv_xtream_codes/wwwdir/index.php")
     if not "api.xtream-codes.com" in open("/etc/hosts").read(): os.system('echo "127.0.0.1    api.xtream-codes.com" >> /etc/hosts')
     if not "downloads.xtream-codes.com" in open("/etc/hosts").read(): os.system('echo "127.0.0.1    downloads.xtream-codes.com" >> /etc/hosts')
     if not "xtream-codes.com" in open("/etc/hosts").read(): os.system('echo "127.0.0.1    xtream-codes.com" >> /etc/hosts')
-    if not "@reboot root /home/xtreamcodes/iptv_xtream_codes/start_services.sh" in open("/etc/crontab").read(): os.system('echo "@reboot root /home/xtreamcodes/iptv_xtream_codes/start_services.sh" >> /etc/crontab')
+    if not "@reboot root sudo systemctl restart xtreamcodes" in open("/etc/crontab").read(): os.system('echo "@reboot root sudo systemctl restart xtreamcodes" >> /etc/crontab')
 
 def start(first=True):
     if first: printc("Starting Xtream Codes")
     else: printc("Restarting Xtream Codes")
-    os.system("/home/xtreamcodes/iptv_xtream_codes/start_services.sh > /dev/null")
+    os.system("sudo systemctl restart xtreamcodes > /dev/null")
 
 def modifyNginx():
     printc("Modifying Nginx")
@@ -262,9 +313,9 @@ if __name__ == "__main__":
     try: rVersion = os.popen('lsb_release -sr').read().strip()
     except: rVersion = None
     if not rVersion in rVersions:
-        printc("Unsupported Operating System, Ubuntu %s" % rVersion, col.BRIGHT_RED)
+        printc("Unsupported Operating System, Ubuntu %s" % rVersion, col.GREEN, 2)
         sys.exit(1)
-    printc("X-UI 22f Ubuntu %s Installer - XoceUnder" % rVersion, col.GREEN, 2)
+    printc("XtreamUI 22f Ubuntu %s Installer - XoceUnder" % rVersion, col.GREEN, 2)
     print(" ")
     rType = input("  Installation Type [MAIN, LB, UPDATE]: ")
     print(" ")
@@ -301,9 +352,9 @@ if __name__ == "__main__":
                     printc("Please store your MySQL password: %s" % rPassword, col.BRIGHT_YELLOW)
                     printc("Admin UI Wan IP: http://%s:25500" % getIP(), col.BRIGHT_YELLOW)
                     printc("Admin UI default login is admin/admin", col.BRIGHT_YELLOW)
-                    printc("Your mysql credentials have been saved to:", col.BRIGHT_YELLOW)
+                    printc("Your mysql credentials have been saved to:")
                     printc("Save Credentials is file to %s/credentials.txt" % rPath, col.BRIGHT_YELLOW)
-                    rFile = io.open(rPath + "/credentials.txt", "w", encoding="utf-8")
+                    rFile = io.open(rPath + "/credentials.txt", "w")
                     rFile.write("MySQL Username: %s\nMySQL Password: %s" % (rUsername, rPassword))
                     rFile.write("Admin UI Wan IP: http://%s:25500\n" % getIP())
                     rFile.write("Admin UI default login is admin/admin\n")
