@@ -92,7 +92,7 @@ def prepare(rType="MAIN"):
     
     if rType == "MAIN":
         printc("Install MariaDB 10.6 repository")
-        subprocess.run("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq software-properties-common > /dev/null 2>&1", shell=True)
+        subprocess.run("apt-get install -y software-properties-common > /dev/null 2>&1", shell=True)
         if rVersion in rVersions:
             printc("Adding repo: Ubuntu %s" % rVersion)
             subprocess.run("curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup > /dev/null 2>&1", shell=True)
@@ -107,7 +107,7 @@ def prepare(rType="MAIN"):
             printc("Installing %s" % rPackage)
             subprocess.run("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null 2>&1", shell=True)
             subprocess.run("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null 2>&1", shell=True)
-            subprocess.run(f"sudo DEBIAN_FRONTEND=noninteractive apt-get -yq {rPackage} > /dev/null 2>&1", shell=True)
+            subprocess.run(f"apt-get install {rPackage} -y > /dev/null 2>&1", shell=True)
     if not is_installed("libssl1.1"):
         printc("Installing libssl1.1")
         subprocess.run("wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1 && sudo dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1 && rm -rf libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1", shell=True)
@@ -340,7 +340,7 @@ if __name__ == "__main__":
     if not rVersion in rVersions:
         printc("Unsupported Operating System, Ubuntu %s" % rVersion, col.GREEN, 2)
         sys.exit(1)
-    printc("XtreamUI Ubuntu %s - Moded XoceUnder" % rVersion, col.GREEN, 2)
+    printc("X-UI Ubuntu %s - Moded XoceUnder" % rVersion, col.GREEN, 2)
     print(" ")
     rType = input("  Installation Type [MAIN, LB, UPDATE]: ")
     print(" ")
