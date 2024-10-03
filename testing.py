@@ -302,7 +302,7 @@ if __name__ == "__main__":
                     printc("Admin UI Wan IP: http://%s:25500" % getIP(), col.BRIGHT_YELLOW)
                     printc("Admin UI default login is admin/admin", col.BRIGHT_YELLOW)
                     printc("Your mysql credentials have been saved to:", col.BRIGHT_YELLOW)
-                    printc("Save Credentials is file to %s/credentials.txt", % getIP(), col.BRIGHT_YELLOW)
+                    printc("Save Credentials is file to %s/credentials.txt" % rPath, col.BRIGHT_YELLOW)
                     rFile = io.open(rPath + "/credentials.txt", "w", encoding="utf-8")
                     rFile.write("MySQL Username: %s\nMySQL Password: %s" % (rUsername, rPassword))
                     rFile.write("Admin UI Wan IP: http://%s:25500\n" % getIP())
