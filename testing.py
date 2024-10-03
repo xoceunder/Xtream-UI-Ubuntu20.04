@@ -95,8 +95,8 @@ def prepare(rType="MAIN"):
         subprocess.run("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq software-properties-common > /dev/null 2>&1", shell=True)
         if rVersion in rVersions:
             printc("Adding repo: Ubuntu %s" % rVersion)
-           subprocess.run("sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 > /dev/null 2>&1", shell=True)
-           subprocess.run(f"sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.6/ubuntu {rVersions[rVersion]} main' > /dev/null 2>&1", shell=True)
+            subprocess.run("sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 > /dev/null 2>&1", shell=True)
+            subprocess.run(f"sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.6/ubuntu {rVersions[rVersion]} main' > /dev/null 2>&1", shell=True)
         subprocess.run("apt-get update -y > /dev/null 2>&1", shell=True)
     for rPackage in rRemove:
         if is_installed(rPackage):
