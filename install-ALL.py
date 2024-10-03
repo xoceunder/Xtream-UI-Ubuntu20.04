@@ -79,11 +79,11 @@ def prepare(rType="MAIN"):
     os.system("apt-get update > /dev/null")
     os.system("apt-get -y full-upgrade > /dev/null")
     if rType == "MAIN":
-        os.system("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install software-properties-common > /dev/null")
+        os.system("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install software-properties-common")
         if rVersion in rVersions:
             printc("Adding repo: Ubuntu %s" % rVersion)
-        os.system("sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 > /dev/null")
-        os.system("sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.6/ubuntu %s main' > /dev/null" % rVersions[rVersion])
+        os.system("sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8")
+        os.system("sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.6/ubuntu %s main'" % rVersions[rVersion])
         os.system("apt-get update > /dev/null")
     for rPackage in rRemove:
         printc("Removing %s" % rPackage)
