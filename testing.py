@@ -75,7 +75,7 @@ def is_installed(package_name):
         return False
 
 def prepare(rType="MAIN"):
-    global rPackages
+    global rPackages, rRemove, rVersions
     if rType != "MAIN": rPackages = rPackages[:-1]
     printc("Preparing Installation")
     if os.path.isfile('/home/xtreamcodes/iptv_xtream_codes/config'):
@@ -89,14 +89,11 @@ def prepare(rType="MAIN"):
     printc("Updating Operating System")
     subprocess.run("apt-get update -y > /dev/null 2>&1", shell=True)
     subprocess.run("apt-get -y full-upgrade > /dev/null 2>&1", shell=True)
-    
     if rType == "MAIN":
         printc("Install MariaDB 10.6 repository")
         subprocess.run("apt-get install -y software-properties-common > /dev/null 2>&1", shell=True)
-        if rVersion in rVersions:
-            printc("Adding repo: Ubuntu %s" % rVersion)
-            subprocess.run("curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup > /dev/null 2>&1", shell=True)
-            subprocess.run("sudo bash mariadb_repo_setup --mariadb-server-version=10.6 > /dev/null 2>&1", shell=True)
+        subprocess.run("curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup > /dev/null 2>&1", shell=True)
+        subprocess.run("sudo bash mariadb_repo_setup --mariadb-server-version=10.6 > /dev/null 2>&1", shell=True)
         subprocess.run("apt-get update -y > /dev/null 2>&1", shell=True)
     for rPackage in rRemove:
         if is_installed(rPackage):
@@ -114,10 +111,7 @@ def prepare(rType="MAIN"):
     if not is_installed("libzip5"):
         printc("Installing libzip5")
         subprocess.run("wget http://archive.ubuntu.com/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1 && sudo dpkg -i libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1 && rm -rf libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1", shell=True)
-    
-
     subprocess.run("sudo apt-get install -f -y > /dev/null 2>&1", shell=True)
-
     python_installed = is_installed("python2.7")
     pip_installed = subprocess.run("pip2.7 --version > /dev/null 2>&1", shell=True).returncode == 0
     paramiko_installed = subprocess.run("pip2.7 show paramiko > /dev/null 2>&1", shell=True).returncode == 0
