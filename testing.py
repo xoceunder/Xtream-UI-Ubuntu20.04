@@ -93,11 +93,11 @@ def prepare(rType="MAIN"):
     os.system("apt-get -y full-upgrade > /dev/null")
     if rType == "MAIN":
         printc("Install MariaDB 10.6 repository")
-        os.system("apt-get install -y software-properties-common > /dev/null")
+        os.system("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install software-properties-common")
         if rVersion in rVersions:
             printc("Adding repo: Ubuntu %s " % rVersion)
-            os.system("apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 >/dev/null 2>&1")
-            os.system("add-apt-repository 'deb [arch=amd64,arm64,ppc64el] http://mirror.lstn.net/mariadb/repo/10.6/ubuntu %s main' > /dev/null"% rVersions[rVersion])
+            os.system("sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8")
+            os.system("sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.6/ubuntu %s main'" % rVersions[rVersion])
         os.system("apt-get update > /dev/null")
     for rPackage in rRemove:
         printc("Removing %s" % rPackage)
@@ -106,7 +106,7 @@ def prepare(rType="MAIN"):
         printc("Installing %s" % rPackage)
         os.system("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null")
         os.system("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null")
-        os.system("apt-get install %s -y > /dev/null" % rPackage)
+        os.system("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install %s" % rPackage)
     printc("Installing pip3")
     os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1")
     printc("Installing pip modules")
