@@ -23,8 +23,7 @@ rVersions = {
     "18.04": "bionic",
     "20.04": "focal",
     "21.04": "hirsute",
-    "22.04": "jammy",
-    "24.04": "noble"
+    "22.04": "jammy"
 }
 
 class col:
@@ -92,10 +91,12 @@ def prepare(rType="MAIN"):
     subprocess.run("apt-get -y full-upgrade > /dev/null 2>&1", shell=True)
     
     if rType == "MAIN":
-        printc("Install MariaDB 11.5 repository")
-        subprocess.run("apt-get install -y software-properties-common > /dev/null 2>&1", shell=True)
-        subprocess.run("curl -fsSL https://mariadb.org/mariadb_release_signing_key.asc | gpg --dearmor -o /usr/share/keyrings/mariadb-archive-keyring.gpg > /dev/null 2>&1", shell=True)
-        subprocess.run("echo y | sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el,s390x] [signed-by=/usr/share/keyrings/mariadb-archive-keyring.gpg] https://mirrors.xtom.com/mariadb/repo/11.5/ubuntu noble main' > /dev/null 2>&1",shell=True)
+        printc("Install MariaDB 10.6 repository")
+        subprocess.run("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq software-properties-common > /dev/null 2>&1", shell=True)
+        if rVersion in rVersions:
+            printc("Adding repo: Ubuntu %s" % rVersion)
+           subprocess.run("sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8 > /dev/null 2>&1", shell=True)
+           subprocess.run(f"sudo add-apt-repository -y 'deb [arch=amd64,arm64,ppc64el] http://ams2.mirrors.digitalocean.com/mariadb/repo/10.6/ubuntu {rVersions[rVersion]} main' > /dev/null 2>&1", shell=True)
         subprocess.run("apt-get update -y > /dev/null 2>&1", shell=True)
     for rPackage in rRemove:
         if is_installed(rPackage):
@@ -106,7 +107,7 @@ def prepare(rType="MAIN"):
             printc("Installing %s" % rPackage)
             subprocess.run("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null 2>&1", shell=True)
             subprocess.run("echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections > /dev/null 2>&1", shell=True)
-            subprocess.run(f"apt-get install {rPackage} -y > /dev/null 2>&1", shell=True)
+            subprocess.run(f"sudo DEBIAN_FRONTEND=noninteractive apt-get -yq {rPackage} > /dev/null 2>&1", shell=True)
     if not is_installed("libssl1.1"):
         printc("Installing libssl1.1")
         subprocess.run("wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1 && sudo dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1 && rm -rf libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1", shell=True)
