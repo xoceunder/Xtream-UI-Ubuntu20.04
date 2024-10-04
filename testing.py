@@ -25,7 +25,8 @@ rVersions = {
     "20.10": "groovy",
     "21.04": "hirsute",
     "21.10": "impish",
-    "22.04": "jammy"
+    "22.04": "jammy",
+    "23.04": "jammy"
 }
 
 class col:
@@ -285,18 +286,22 @@ def configure():
     os.system("sudo chmod 0777 /home/xtreamcodes/iptv_xtream_codes/GeoLite2.mmdb > /dev/null")
     #os.system("sed -i 's|chown -R xtreamcodes:xtreamcodes /home/xtreamcodes|chown -R xtreamcodes:xtreamcodes /home/xtreamcodes 2>/dev/null|g' /home/xtreamcodes/iptv_xtream_codes/start_services.sh")
     #os.system("chmod +x /home/xtreamcodes/iptv_xtream_codes/start_services.sh > /dev/null")
-    os.system("mount -a")
+    os.system("sudo mount -a  >/dev/null 2>&1")
     os.system("chmod 0700 /home/xtreamcodes/iptv_xtream_codes/config > /dev/null")
     os.system("sed -i 's|echo \"Xtream Codes Reborn\";|header(\"Location: https://www.google.com/\");|g' /home/xtreamcodes/iptv_xtream_codes/wwwdir/index.php")
     if not "api.xtream-codes.com" in open("/etc/hosts").read(): os.system('echo "127.0.0.1    api.xtream-codes.com" >> /etc/hosts')
     if not "downloads.xtream-codes.com" in open("/etc/hosts").read(): os.system('echo "127.0.0.1    downloads.xtream-codes.com" >> /etc/hosts')
     if not "xtream-codes.com" in open("/etc/hosts").read(): os.system('echo "127.0.0.1    xtream-codes.com" >> /etc/hosts')
-    if not "@reboot root sudo systemctl restart xtreamcodes" in open("/etc/crontab").read(): os.system('echo "@reboot root sudo systemctl restart xtreamcodes" >> /etc/crontab')
+    if not "@reboot root sudo systemctl start xtreamcodes" in open("/etc/crontab").read(): os.system('echo "@reboot root sudo systemctl start xtreamcodes" >> /etc/crontab')
 
 def start(first=True):
-    if first: printc("Starting Xtream Codes")
-    else: printc("Restarting Xtream Codes")
-    os.system("sudo systemctl restart xtreamcodes > /dev/null")
+    if first: 
+        printc("Starting Xtream Codes")
+        os.system("sudo systemctl daemon-reload > /dev/null")
+        os.system("sudo systemctl start xtreamcodes > /dev/null")
+    else: 
+        printc("Restarting Xtream Codes")
+        os.system("sudo systemctl restart xtreamcodes > /dev/null")
 
 def modifyNginx():
     printc("Modifying Nginx")
@@ -346,7 +351,7 @@ if __name__ == "__main__":
                 if rType.upper() == "MAIN": 
                     modifyNginx()
                     update(rType.upper())
-                start()
+                start(1)
                 printc("Installation completed!", col.GREEN, 2)
                 if rType.upper() == "MAIN":
                     printc("Please store your MySQL password: %s" % rPassword, col.BRIGHT_YELLOW)
@@ -359,6 +364,7 @@ if __name__ == "__main__":
                     rFile.write("Admin UI Wan IP: http://%s:25500\n" % getIP())
                     rFile.write("Admin UI default login is admin/admin\n")
                     rFile.close()
+                    os.system("sudo systemctl restart xtreamcodes")
             else: printc("Installation cancelled", col.BRIGHT_RED)
         else: printc("Invalid entries", col.BRIGHT_RED)
     elif rType.upper() == "UPDATE":
