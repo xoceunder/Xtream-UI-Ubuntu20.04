@@ -365,7 +365,7 @@ if __name__ == "__main__":
                     rFile.write("Admin UI Wan IP: http://%s:25500\n" % getIP())
                     rFile.write("Admin UI default login is admin/admin\n")
                     rFile.close()
-                    os.system("sudo systemctl restart xtreamcodes")
+                    subprocess.run("sudo systemctl restart xtreamcodes", shell=True)
             else: printc("Installation cancelled", col.BRIGHT_RED)
         else: printc("Invalid entries", col.BRIGHT_RED)
     elif rType.upper() == "UPDATE":
