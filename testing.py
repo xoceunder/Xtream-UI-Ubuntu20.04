@@ -298,11 +298,10 @@ def configure():
 def start(first=True):
     if first: 
         printc("Starting Xtream Codes")
-        os.system("sudo systemctl daemon-reload > /dev/null")
-        os.system("sudo systemctl start xtreamcodes > /dev/null")
+        subprocess.run("sudo systemctl start xtreamcodes", shell=True)
     else: 
         printc("Restarting Xtream Codes")
-        os.system("sudo systemctl restart xtreamcodes > /dev/null")
+        subprocess.run("sudo systemctl restart xtreamcodes", shell=True)
 
 def modifyNginx():
     printc("Modifying Nginx")
