@@ -7,7 +7,7 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
 rDownloadURL = {"main": "https://bitbucket.org/xoceunder/x-ui/raw/master/main_xui_xoceunder.zip", "sub": "https://bitbucket.org/xoceunder/x-ui/raw/master/sub_xui_xoceunder.zip"}
-rPackages = ["cpufrequtils", "iproute2", "python-is-python3", "net-tools", "dirmngr", "gpg-agent", "software-properties-common", "libcurl4", "libxslt1-dev", "libgeoip-dev", "libonig-dev", "e2fsprogs", "wget", "sysstat", "alsa-utils", "v4l-utils", "mcrypt", "nscd", "htop", "iptables-persistent", "libjpeg-dev", "libpng-dev", "php-ssh2", "xz-utils", "zip", "unzip", "mc", "libpng16-16", "libzip5", "mariadb-server", "rsync"]
+rPackages = ["cpufrequtils", "iproute2", "python-is-python3", "python3-pip", "net-tools", "dirmngr", "gpg-agent", "software-properties-common", "libcurl4", "libxslt1-dev", "libgeoip-dev", "libonig-dev", "e2fsprogs", "wget", "sysstat", "alsa-utils", "v4l-utils", "mcrypt", "nscd", "htop", "iptables-persistent", "libjpeg-dev", "libpng-dev", "php-ssh2", "xz-utils", "zip", "unzip", "mc", "libpng16-16", "libzip5", "mariadb-server", "rsync"]
 rRemove = ["mysql-server"]
 rInstall = {"MAIN": "main", "LB": "sub"}
 rUpdate = {"UPDATE": "update"}
@@ -88,9 +88,9 @@ def prepare(rType="MAIN"):
     os.system("apt-get update > /dev/null 2>&1")
     os.system("apt-get -y full-upgrade > /dev/null 2>&1")
     if rType == "MAIN":
-        printc("Install MariaDB 11.6 repository")
+        printc("Install MariaDB 11.5 repository")
         os.system("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install software-properties-common > /dev/null 2>&1")
-        os.system("curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version='mariadb-11.6' > /dev/null 2>&1")
+        os.system("curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version='mariadb-11.5' > /dev/null 2>&1")
         os.system("apt-get update > /dev/null 2>&1")
     for rPackage in rRemove:
         printc("Removing %s" % rPackage)
@@ -107,8 +107,6 @@ def prepare(rType="MAIN"):
     if not is_installed("libzip5"):
         printc("Installing libzip5")
         subprocess.run("wget http://archive.ubuntu.com/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1 && sudo dpkg -i libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1 && rm -rf libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1", shell=True)
-    printc("Installing pip3")
-    os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1")
     printc("Installing pip modules")
     os.system("pip3 install ndg-httpsclient > /dev/null 2>&1 && pip3 install pyopenssl > /dev/null 2>&1 && pip3 install pyasn1 > /dev/null 2>&1")
     os.system("apt-get install -f -y> /dev/null") # Clean up above
