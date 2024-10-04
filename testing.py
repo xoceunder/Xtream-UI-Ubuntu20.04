@@ -7,7 +7,7 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
 rDownloadURL = {"main": "https://bitbucket.org/xoceunder/x-ui/raw/master/main_xui_xoceunder.zip", "sub": "https://bitbucket.org/xoceunder/x-ui/raw/master/sub_xui_xoceunder.zip"}
-rPackages = ["cpufrequtils", "iproute2", "python", "net-tools", "dirmngr", "gpg-agent", "software-properties-common", "libcurl4", "libxslt1-dev", "libgeoip-dev", "libonig-dev", "e2fsprogs", "wget", "sysstat", "alsa-utils", "v4l-utils", "mcrypt", "nscd", "htop", "iptables-persistent", "libjpeg-dev", "libpng-dev", "php-ssh2", "xz-utils", "zip", "unzip", "mc", "libpng16-16", "libzip5", "mariadb-server", "rsync"]
+rPackages = ["cpufrequtils", "iproute2", "python-is-python3", "net-tools", "dirmngr", "gpg-agent", "software-properties-common", "libcurl4", "libxslt1-dev", "libgeoip-dev", "libonig-dev", "e2fsprogs", "wget", "sysstat", "alsa-utils", "v4l-utils", "mcrypt", "nscd", "htop", "iptables-persistent", "libjpeg-dev", "libpng-dev", "php-ssh2", "xz-utils", "zip", "unzip", "mc", "libpng16-16", "libzip5", "mariadb-server", "rsync"]
 rRemove = ["mysql-server"]
 rInstall = {"MAIN": "main", "LB": "sub"}
 rUpdate = {"UPDATE": "update"}
@@ -101,11 +101,19 @@ def prepare(rType="MAIN"):
         if not is_installed(rPackage):
             printc("Installing %s" % rPackage)
             os.system("sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install %s > /dev/null" % rPackage)
+    if not is_installed("libssl1.1"):
+        printc("Installing libssl1.1")
+        subprocess.run("wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1 && sudo dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1 && rm -rf libssl1.1_1.1.0g-2ubuntu4_amd64.deb > /dev/null 2>&1", shell=True)
+    if not is_installed("libzip5"):
+        printc("Installing libzip5")
+        subprocess.run("wget http://archive.ubuntu.com/ubuntu/pool/universe/libz/libzip/libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1 && sudo dpkg -i libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1 && rm -rf libzip5_1.5.1-0ubuntu1_amd64.deb > /dev/null 2>&1", shell=True)
     printc("Installing pip3")
     os.system("add-apt-repository universe > /dev/null 2>&1 && curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py > /dev/null 2>&1 && python3 get-pip.py > /dev/null 2>&1")
     printc("Installing pip modules")
     os.system("pip3 install ndg-httpsclient > /dev/null 2>&1 && pip3 install pyopenssl > /dev/null 2>&1 && pip3 install pyasn1 > /dev/null 2>&1")
-    os.system("apt-get install -f > /dev/null") # Clean up above
+    os.system("apt-get install -f -y> /dev/null") # Clean up above
+    
+    subprocess.run("apt-get install -f -y > /dev/null 2>&1", shell=True)
     try:
         subprocess.check_output("getent passwd xtreamcodes > /dev/null".split())
     except:
