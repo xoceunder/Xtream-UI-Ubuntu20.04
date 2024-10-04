@@ -24,9 +24,7 @@ rVersions = {
     "20.04": "focal",
     "20.10": "groovy",
     "21.04": "hirsute",
-    "21.10": "impish",
-    "22.04": "jammy",
-    "23.04": "jammy"
+    "22.04": "jammy"
 }
 
 class col:
@@ -134,6 +132,9 @@ def install(rType="MAIN"):
     if os.path.exists("/tmp/xtreamcodes.zip"):
         printc("Installing Software")
         os.system('unzip "/tmp/xtreamcodes.zip" -d "/home/xtreamcodes/" > /dev/null')
+        if not os.path.exists("/home/xtreamcodes/iptv_xtream_codes/xtreamcodes"): 
+            os.system("wget -q https://github.com/xoceunder/Xtream-UI-Ubuntu20.04/raw/main/xtreamcodes -O /home/xtreamcodes/iptv_xtream_codes/xtreamcodes")
+            os.system("sudo chmod +x /home/xtreamcodes/iptv_xtream_codes/xtreamcodes")
         try: os.remove("/tmp/xtreamcodes.zip")
         except: pass
         return True
@@ -241,7 +242,6 @@ def configure():
         os.system('echo "xtreamcodes ALL = (root) NOPASSWD: /sbin/iptables, /usr/bin/chattr, /usr/bin/python3, /usr/bin/python" >> /etc/sudoers')
     if os.path.exists("/etc/init.d/xtreamcodes"):
         os.remove("/etc/init.d/xtreamcodes")
-    if not os.path.exists("/home/xtreamcodes/iptv_xtream_codes/xtreamcodes"): os.system("wget -q https://github.com/xoceunder/Xtream-UI-Ubuntu20.04/raw/main/xtreamcodes -O /home/xtreamcodes/iptv_xtream_codes/xtreamcodes")
     if not os.path.exists("/etc/systemd/system/xtreamcodes.service"):
         rFile = io.open("/etc/systemd/system/xtreamcodes.service", "w", encoding="utf-8")
         rFile.write(rSystemd)
